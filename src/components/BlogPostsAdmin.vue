@@ -1,32 +1,46 @@
 <template>
   <div class="p-6">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold">Blog Posts</h1>
-      <button class="btn btn-primary btn-sm" @click="showAddBlogPostForm = true">
-        <i class="fas fa-plus mr-2"></i> Add Post
+      <h1 class="text-2xl font-bold text-gray-800">Blog Posts</h1>
+      <button class="btn btn-primary btn-sm flex items-center gap-2" @click="showAddBlogPostForm = true">
+        <i class="fas fa-plus"></i> Add Post
       </button>
     </div>
 
     <!-- Blog Posts List -->
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-      <div v-for="post in blogPosts" :key="post.id" class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
-        <figure class="px-4 pt-4">
-          <img :src="post.image" :alt="post.title" class="rounded-lg h-48 w-full object-cover" />
-        </figure>
-        <div class="card-body px-4 py-3">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="badge badge-sm">{{ post.category }}</span>
-            <span class="text-xs text-gray-500">{{ formatDate(post.date) }}</span>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div 
+        v-for="post in blogPosts" 
+        :key="post.id" 
+        class="card bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+        
+        <!-- Blog Image -->
+        <figure class="relative">
+          <img 
+            :src="post.image" 
+            :alt="post.title" 
+            class="rounded-t-lg w-full h-48 object-cover">
+          <div class="absolute top-2 left-2">
+            <span class="badge badge-sm text-xs text-white px-2 py-1 rounded" >
+              {{ post.category }}
+            </span>
           </div>
-          <h2 class="card-title text-lg">{{ post.title }}</h2>
+        </figure>
+        
+        <!-- Blog Details -->
+        <div class="card-body p-4">
+          <h2 class="text-lg font-semibold text-gray-900 truncate">{{ post.title }}</h2>
           <p class="text-sm text-gray-600 line-clamp-2">{{ post.excerpt }}</p>
-          <div class="card-actions justify-end mt-3">
-            <button class="btn btn-ghost btn-sm" @click="editPost(post)">
-              <i class="fas fa-edit text-blue-500"></i>
-            </button>
-            <button class="btn btn-ghost btn-sm" @click="confirmDelete(post)">
-              <i class="fas fa-trash text-red-500"></i>
-            </button>
+          <div class="mt-4 flex justify-between items-center">
+            <span class="text-xs text-gray-500">{{ formatDate(post.date) }}</span>
+            <div class="flex gap-2">
+              <button class="btn btn-ghost btn-sm text-blue-500 tooltip" @click="editPost(post)" title="Edit Post">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-ghost btn-sm text-red-500 tooltip" @click="confirmDelete(post)" title="Delete Post">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -280,3 +294,21 @@ const deletePost = async () => {
 
 fetchBlogPosts();
 </script>
+
+<style scoped>
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.tooltip:hover::after {
+  content: attr(title);
+  position: absolute;
+  background: #333;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+</style>

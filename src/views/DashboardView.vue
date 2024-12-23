@@ -1,97 +1,130 @@
 <template>
   <div class="p-6 max-w-7xl mx-auto">
-    <h1 class="text-2xl font-bold mb-8">Dashboard</h1>
-    
+    <h1 class="text-3xl font-extrabold mb-8 text-gray-700">Dashboard</h1>
+
     <!-- Profile Section -->
-    <div class="mb-8 bg-white rounded-lg shadow-sm">
-      <div class="flex justify-between items-center p-4 border-b">
-        <h2 class="text-lg font-semibold">Profile</h2>
-        <router-link to="/profile" class="btn btn-ghost btn-sm">
+    <div class="mb-8 bg-white rounded-lg shadow-md transition hover:shadow-lg">
+      <div class="flex justify-between items-center p-4 border-b bg-gray-50">
+        <h2 class="text-lg font-semibold text-gray-700">Profile</h2>
+        <router-link to="/profile" class="btn btn-ghost btn-sm flex items-center gap-1">
           <i class="fas fa-edit text-blue-500"></i>
+          <span>Edit</span>
         </router-link>
       </div>
-      <div v-if="profile" class="p-4">
-        <p class="mb-2"><span class="font-medium">Name:</span> {{ profile.name }}</p>
-        <p><span class="font-medium">Description:</span> {{ profile.description }}</p>
+      <div v-if="profile" class="p-4 text-gray-600">
+        <p class="mb-2"><span class="font-medium text-gray-700">Name:</span> {{ profile.name }}</p>
+        <p><span class="font-medium text-gray-700">Description:</span> {{ profile.description }}</p>
       </div>
-      <p v-else class="p-4 text-gray-500">No profile data available</p>
+      <p v-else class="p-4 text-gray-400 italic">No profile data available</p>
     </div>
 
     <!-- Hero Section -->
-    <div class="mb-8 bg-white rounded-lg shadow-sm">
-      <div class="flex justify-between items-center p-4 border-b">
-        <h2 class="text-lg font-semibold">Hero Section</h2>
-        <router-link to="/hero" class="btn btn-ghost btn-sm">
+    <div class="mb-8 bg-white rounded-lg shadow-md transition hover:shadow-lg">
+      <div class="flex justify-between items-center p-4 border-b bg-gray-50">
+        <h2 class="text-lg font-semibold text-gray-700">Hero Section</h2>
+        <router-link to="/hero" class="btn btn-ghost btn-sm flex items-center gap-1">
           <i class="fas fa-edit text-blue-500"></i>
+          <span>Edit</span>
         </router-link>
       </div>
-      <div v-if="hero" class="p-4">
-        <p class="mb-2"><span class="font-medium">Title:</span> {{ hero.title }}</p>
-        <p><span class="font-medium">Subtitle:</span> {{ hero.subtitle }}</p>
+      <div v-if="hero" class="p-4 text-gray-600">
+        <p class="mb-2"><span class="font-medium text-gray-700">Title:</span> {{ hero.title }}</p>
+        <p><span class="font-medium text-gray-700">Subtitle:</span> {{ hero.subtitle }}</p>
       </div>
-      <p v-else class="p-4 text-gray-500">No hero data available</p>
+      <p v-else class="p-4 text-gray-400 italic">No hero data available</p>
     </div>
 
     <!-- Projects Section -->
-    <div class="mb-8 bg-white rounded-lg shadow-sm">
-      <div class="flex justify-between items-center p-4 border-b">
-        <h2 class="text-lg font-semibold">Projects</h2>
-        <router-link to="/projects" class="btn btn-ghost btn-sm">
+    <div class="mb-8 bg-white rounded-lg shadow-md transition hover:shadow-lg">
+      <div class="flex justify-between items-center p-4 border-b bg-gray-50">
+        <h2 class="text-lg font-semibold text-gray-700">Projects</h2>
+        <router-link to="/projects" class="btn btn-ghost btn-sm flex items-center gap-1">
           <i class="fas fa-plus text-blue-500"></i>
+          <span>Add Project</span>
         </router-link>
       </div>
       <div v-if="projects.length" class="divide-y">
-        <div v-for="project in projects" :key="project.id" class="flex justify-between items-center p-4 hover:bg-gray-50">
-          <span>{{ project.title }}</span>
-          <button @click="deleteProject(project.id)" class="btn btn-ghost btn-sm">
-            <i class="fas fa-trash text-red-500"></i>
+        <div 
+          v-for="project in projects" 
+          :key="project.id" 
+          class="flex justify-between items-center p-4 hover:bg-gray-100 transition"
+        >
+          <span class="text-gray-700">{{ project.title }}</span>
+          <button 
+            @click="deleteProject(project.id)" 
+            class="btn btn-ghost btn-sm flex items-center gap-1 text-red-500"
+          >
+            <i class="fas fa-trash"></i>
+            <span>Delete</span>
           </button>
         </div>
       </div>
-      <p v-else class="p-4 text-gray-500">No projects available</p>
+      <p v-else class="p-4 text-gray-400 italic">No projects available</p>
     </div>
 
     <!-- Blog Posts Section -->
-    <div class="mb-8 bg-white rounded-lg shadow-sm">
-      <div class="flex justify-between items-center p-4 border-b">
-        <h2 class="text-lg font-semibold">Blog Posts</h2>
-        <router-link to="/blog-posts" class="btn btn-ghost btn-sm">
+    <div class="mb-8 bg-white rounded-lg shadow-md transition hover:shadow-lg">
+      <div class="flex justify-between items-center p-4 border-b bg-gray-50">
+        <h2 class="text-lg font-semibold text-gray-700">Blog Posts</h2>
+        <router-link to="/blog-posts" class="btn btn-ghost btn-sm flex items-center gap-1">
           <i class="fas fa-plus text-blue-500"></i>
+          <span>Add Post</span>
         </router-link>
       </div>
       <div v-if="blogPosts.length" class="divide-y">
-        <div v-for="post in blogPosts" :key="post.id" class="flex justify-between items-center p-4 hover:bg-gray-50">
-          <span>{{ post.title }}</span>
-          <button @click="deleteBlogPost(post.id)" class="btn btn-ghost btn-sm">
-            <i class="fas fa-trash text-red-500"></i>
+        <div 
+          v-for="post in blogPosts" 
+          :key="post.id" 
+          class="flex justify-between items-center p-4 hover:bg-gray-100 transition"
+        >
+          <span class="text-gray-700">{{ post.title }}</span>
+          <button 
+            @click="deleteBlogPost(post.id)" 
+            class="btn btn-ghost btn-sm flex items-center gap-1 text-red-500"
+          >
+            <i class="fas fa-trash"></i>
+            <span>Delete</span>
           </button>
         </div>
       </div>
-      <p v-else class="p-4 text-gray-500">No blog posts available</p>
+      <p v-else class="p-4 text-gray-400 italic">No blog posts available</p>
     </div>
 
     <!-- Social Media Section -->
-    <div class="mb-8 bg-white rounded-lg shadow-sm">
-      <div class="flex justify-between items-center p-4 border-b">
-        <h2 class="text-lg font-semibold">Social Media</h2>
-        <router-link to="/social-media" class="btn btn-ghost btn-sm">
+    <div class="mb-8 bg-white rounded-lg shadow-md transition hover:shadow-lg">
+      <div class="flex justify-between items-center p-4 border-b bg-gray-50">
+        <h2 class="text-lg font-semibold text-gray-700">Social Media</h2>
+        <router-link to="/social-media" class="btn btn-ghost btn-sm flex items-center gap-1">
           <i class="fas fa-plus text-blue-500"></i>
+          <span>Add Link</span>
         </router-link>
       </div>
       <div v-if="socialMedia.length" class="divide-y">
-        <div v-for="item in socialMedia" :key="item.id" class="flex justify-between items-center p-4 hover:bg-gray-50">
-          <span>{{ item.name }}</span>
+        <div 
+          v-for="item in socialMedia" 
+          :key="item.id" 
+          class="flex justify-between items-center p-4 hover:bg-gray-100 transition"
+        >
+          <span class="text-gray-700">{{ item.name }}</span>
           <div class="flex gap-2">
-            <button @click="editSocialMedia(item)" class="btn btn-ghost btn-sm">
-              <i class="fas fa-edit text-blue-500"></i>
+            <button 
+              @click="editSocialMedia(item)" 
+              class="btn btn-ghost btn-sm flex items-center gap-1 text-blue-500"
+            >
+              <i class="fas fa-edit"></i>
+              <span>Edit</span>
             </button>
-            <button @click="deleteSocialMedia(item.id)" class="btn btn-ghost btn-sm">
-              <i class="fas fa-trash text-red-500"></i>
+            <button 
+              @click="deleteSocialMedia(item.id)" 
+              class="btn btn-ghost btn-sm flex items-center gap-1 text-red-500"
+            >
+              <i class="fas fa-trash"></i>
+              <span>Delete</span>
             </button>
           </div>
         </div>
       </div>
-      <p v-else class="p-4 text-gray-500">No social media links available</p>
+      <p v-else class="p-4 text-gray-400 italic">No social media links available</p>
     </div>
   </div>
 </template>
