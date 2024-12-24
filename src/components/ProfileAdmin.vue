@@ -3,7 +3,7 @@
     <h1 class="text-2xl font-bold">Profile Admin</h1>
     <div class="mt-4">
       <h2 class="text-xl font-bold">Update Profile</h2>
-      <form @submit.prevent="updateProfile">
+      <form @submit.prevent="handleProfileUpdate">
         <input
           v-model="profileData.image"
           placeholder="Image URL"
@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     ...mapActions(["fetchProfile", "updateProfile"]),
-    async updateProfile() {
+    async handleProfileUpdate() {
       await this.updateProfile(this.profileData);
       await this.fetchProfile();
     },

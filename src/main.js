@@ -36,8 +36,16 @@ library.add(
   faLink
 );
 
-const app = createApp(App);
-app.component('font-awesome-icon', FontAwesomeIcon);
-app.use(store)
-  .use(router)
-  .mount('#app');
+const init = async () => {
+  const app = createApp(App);
+  app.component('font-awesome-icon', FontAwesomeIcon);
+  
+  // Initialize auth state before mounting the app
+  await store.dispatch('initAuth');
+  
+  app.use(store)
+    .use(router)
+    .mount('#app');
+};
+
+init();

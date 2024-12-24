@@ -3,7 +3,7 @@
     <h1 class="text-2xl font-bold">Hero Admin</h1>
     <div class="mt-4">
       <h2 class="text-xl font-bold">Update Hero</h2>
-      <form @submit.prevent="updateHero">
+      <form @submit.prevent="handleHeroUpdate">
         <input
           v-model="heroData.image"
           placeholder="Image URL"
@@ -71,7 +71,7 @@ export default {
         exploreLink: "",
         contactText: "",
         contactLink: "",
-        typedStrings: [],
+        typedStrings: "",
       },
     };
   },
@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     ...mapActions(["fetchHero", "updateHero"]),
-    async updateHero() {
+    async handleHeroUpdate() {
       await this.updateHero(this.heroData);
       await this.fetchHero();
     },
@@ -88,7 +88,11 @@ export default {
   async mounted() {
     await this.fetchHero();
     if (this.hero.length > 0) {
-      this.heroData = this.hero[0];
+      const heroData = this.hero[0];
+      this.heroData = {
+        ...heroData,
+        typedStrings: Array.isArray(heroData.typedStrings) ? heroData.typedStrings.join(', ') : ''
+      };
     }
   },
 };

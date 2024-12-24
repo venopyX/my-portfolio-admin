@@ -131,9 +131,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { db } from '@/firebase';
 import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
 
+const router = useRouter();
 const profile = ref(null);
 const hero = ref(null);
 const projects = ref([]);
@@ -229,6 +231,13 @@ const deleteSocialMedia = async (id) => {
       console.error('Error deleting social media:', error);
     }
   }
+};
+
+const editSocialMedia = (item) => {
+  router.push({
+    path: '/social-media',
+    query: { id: item.id }
+  });
 };
 
 onMounted(() => {

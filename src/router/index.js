@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { getAuth } from 'firebase/auth';
+// import { getAuth } from 'firebase/auth';
 import AdminLayout from '@/components/AdminLayout.vue';
+import store from '@/store';
 
 const routes = [
   {
@@ -61,9 +62,13 @@ const router = createRouter({
 
 // Navigation guard
 router.beforeEach(async (to, from, next) => {
-  const auth = getAuth();
+  // Wait for auth to initialize before proceeding
+  if (!store.getters.isAuthInitialized) {
+    await store.dispatch('initAuth');
+  }
+
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  const isAuthenticated = auth.currentUser;
+  const isAuthenticated = store.getters.isAuthenticated;
 
   // Update document title
   document.title = to.meta.title 

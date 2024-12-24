@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import { db } from "@/firebase";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
   collection,
   addDoc,
@@ -11,6 +12,7 @@ import {
   query,
   orderBy,
   serverTimestamp,
+  setDoc
 } from "firebase/firestore";
 
 export default createStore({
@@ -20,6 +22,8 @@ export default createStore({
     socialMedia: [],
     hero: [],
     profile: [],
+    user: null,
+    authInitialized: false,
     loading: {
       projects: false,
       blogPosts: false,
@@ -45,6 +49,12 @@ export default createStore({
     },
     setProfile(state, profile) {
       state.profile = profile;
+    },
+    setUser(state, user) {
+      state.user = user;
+    },
+    setAuthInitialized(state, value) {
+      state.authInitialized = value;
     },
     setLoading(state, { key, value }) {
       state.loading[key] = value;
@@ -190,10 +200,13 @@ export default createStore({
       commit('setLoading', { key: 'hero', value: true });
       
       await dispatch('handleAction', async () => {
-        const docRef = doc(db, "hero", "heroData");
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          commit("setHero", [{ id: docSnap.id, ...docSnap.data() }]);
+        const heroRef = doc(db, "hero", "main");
+        const heroDoc = await getDoc(heroRef);
+        if (heroDoc.exists()) {
+          const heroData = { id: heroDoc.id, ...heroDoc.data() };
+          commit("setHero", [heroData]);
+        } else {
+          commit("setHero", []);
         }
       });
 
@@ -202,8 +215,13 @@ export default createStore({
 
     async updateHero({ dispatch }, heroData) {
       return dispatch('handleAction', async () => {
-        const heroRef = doc(db, "hero", "heroData");
-        await updateDoc(heroRef, heroData);
+        const { typedStrings, ...otherData } = heroData;
+        const processedData = {
+          ...otherData,
+          typedStrings: Array.isArray(typedStrings) ? typedStrings : typedStrings.split(',').map(s => s.trim())
+        };
+        const heroRef = doc(db, "hero", "main");
+        await setDoc(heroRef, processedData, { merge: true });
       });
     },
 
@@ -212,10 +230,13 @@ export default createStore({
       commit('setLoading', { key: 'profile', value: true });
       
       await dispatch('handleAction', async () => {
-        const docRef = doc(db, "profile", "profileData");
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          commit("setProfile", [{ id: docSnap.id, ...docSnap.data() }]);
+        const profileRef = doc(db, "profile", "main");
+        const profileDoc = await getDoc(profileRef);
+        if (profileDoc.exists()) {
+          const profileData = { id: profileDoc.id, ...profileDoc.data() };
+          commit("setProfile", [profileData]);
+        } else {
+          commit("setProfile", []);
         }
       });
 
@@ -224,14 +245,27 @@ export default createStore({
 
     async updateProfile({ dispatch }, profileData) {
       return dispatch('handleAction', async () => {
-        const profileRef = doc(db, "profile", "profileData");
-        await updateDoc(profileRef, profileData);
+        const profileRef = doc(db, "profile", "main");
+        await setDoc(profileRef, profileData, { merge: true });
+      });
+    },
+
+    initAuth({ commit }) {
+      const auth = getAuth();
+      return new Promise((resolve) => {
+        onAuthStateChanged(auth, (user) => {
+          commit('setUser', user);
+          commit('setAuthInitialized', true);
+          resolve(user);
+        });
       });
     }
   },
 
   getters: {
     isLoading: (state) => (key) => state.loading[key],
-    getError: (state) => state.error
+    getError: (state) => state.error,
+    isAuthenticated: (state) => !!state.user,
+    isAuthInitialized: (state) => state.authInitialized
   }
 });
