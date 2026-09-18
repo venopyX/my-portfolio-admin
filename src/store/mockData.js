@@ -18,20 +18,28 @@ export const initialHero = {
 
 export const initialProjects = [
   {
-    id: "proj-1",
-    title: "Portfolio CMS Platform",
-    description: "A headless portfolio management suite built with Vue 3, Tailwind CSS, and cloud persistence.",
-    image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80",
-    link: "https://github.com",
-    tags: ["Vue 3", "Tailwind", "Firebase"]
+    id: "Eh3j9YLaCToEXjlAcL0G",
+    title: "AI Chatbot",
+    description: "An AI-powered chatbot developed using Python and TensorFlow, designed to assist customers with their queries and provide personalized recommendations.",
+    image: "https://placehold.co/300x200",
+    link: "https://github.com/venopyX/ai-chatbot",
+    tags: ["Python", "TensorFlow", "AI"]
   },
   {
-    id: "proj-2",
-    title: "AI Code Reviewer",
-    description: "Automated code quality and performance analysis tool powered by modern LLMs.",
-    image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
-    link: "https://github.com",
-    tags: ["TypeScript", "Node.js", "AI"]
+    id: "e7JukiVQzJgWI7s90Yke",
+    title: "E-commerce Platform",
+    description: "A full-featured e-commerce platform built with Vue.js and Node.js, including user authentication, product management, and payment integration.",
+    image: "https://placehold.co/300x200",
+    link: "https://github.com/venopyX/ecommerce-platform",
+    tags: ["Vue.js", "Node.js", "E-Commerce"]
+  },
+  {
+    id: "zAtyBDsQj1gC4REVIZCE",
+    title: "Blockchain Voting System",
+    description: "A decentralized voting system built on the Ethereum blockchain, ensuring secure and transparent voting processes.",
+    image: "https://placehold.co/300x200",
+    link: "https://github.com/venopyX/blockchain-voting-system",
+    tags: ["Blockchain", "Ethereum", "Web3"]
   }
 ];
 

@@ -96,12 +96,34 @@ export default createStore({
       if (isFirebaseConfigured && db) {
         try {
           await dispatch('handleAction', async () => {
-            const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
-            const querySnapshot = await getDocs(q);
+            const querySnapshot = await getDocs(collection(db, "projects"));
             projects = querySnapshot.docs.map((doc) => ({
               id: doc.id,
               ...doc.data(),
             }));
+
+            // Graceful in-memory sorting:
+            // 1. By explicit 'order' field ascending if present
+            // 2. By 'createdAt' timestamp descending if present
+            // 3. Otherwise preserve natural collection order
+            projects.sort((a, b) => {
+              if (a.order !== undefined && b.order !== undefined) {
+                return a.order - b.order;
+              }
+              if (a.order !== undefined) return -1;
+              if (b.order !== undefined) return 1;
+
+              const dateA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : (a.createdAt ? new Date(a.createdAt).getTime() : 0);
+              const dateB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : (b.createdAt ? new Date(b.createdAt).getTime() : 0);
+              if (dateA && dateB) {
+                return dateB - dateA;
+              }
+              if (dateA) return -1;
+              if (dateB) return 1;
+
+              return 0;
+            });
+
             commit("setProjects", projects);
           });
           commit('setLoading', { key: 'projects', value: false });

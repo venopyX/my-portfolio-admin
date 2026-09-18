@@ -57,14 +57,14 @@
             />
             <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
               <a 
-                v-if="project.link" 
-                :href="project.link" 
+                v-if="project.link || project.liveUrl || project.githubUrl" 
+                :href="project.link || project.liveUrl || project.githubUrl" 
                 target="_blank" 
                 rel="noopener"
                 class="text-xs font-semibold text-white bg-blue-600/90 hover:bg-blue-600 px-3 py-1.5 rounded-md backdrop-blur flex items-center gap-1.5"
               >
-                <span>Live Demo</span>
-                <i class="fas fa-external-link-alt text-[10px]"></i>
+                <i :class="(project.link || project.githubUrl || '').includes('github.com') ? 'fab fa-github' : 'fas fa-external-link-alt'" class="text-[11px]"></i>
+                <span>{{ (project.link || project.githubUrl || '').includes('github.com') ? 'GitHub' : 'Live Demo' }}</span>
               </a>
             </div>
           </div>
@@ -74,14 +74,14 @@
             <div class="flex items-start justify-between gap-2">
               <h2 class="text-base font-bold text-slate-900 line-clamp-1">{{ project.title }}</h2>
               <a 
-                v-if="project.link" 
-                :href="project.link" 
+                v-if="project.link || project.liveUrl || project.githubUrl" 
+                :href="project.link || project.liveUrl || project.githubUrl" 
                 target="_blank" 
                 rel="noopener"
                 class="text-slate-400 hover:text-blue-600 p-1 shrink-0" 
-                title="View Link"
+                :title="(project.link || project.githubUrl || '').includes('github.com') ? 'View on GitHub' : 'View Link'"
               >
-                <i class="fas fa-external-link-alt text-xs"></i>
+                <i :class="(project.link || project.githubUrl || '').includes('github.com') ? 'fab fa-github' : 'fas fa-external-link-alt'" class="text-xs"></i>
               </a>
             </div>
 
@@ -332,14 +332,14 @@
 </template>
 
 <script>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 
 export default {
   name: 'ProjectsAdmin',
   setup() {
     const store = useStore();
-    const projects = ref([]);
+    const projects = ref(store.state.projects || []);
     const searchQuery = ref('');
     const showAddProjectForm = ref(false);
     const showDeleteConfirm = ref(false);
@@ -347,6 +347,17 @@ export default {
     const isSubmitting = ref(false);
     const selectedProject = ref(null);
     const tagsInput = ref('');
+
+    // Keep projects in sync whenever Vuex store updates
+    watch(
+      () => store.state.projects,
+      (newProjects) => {
+        if (newProjects) {
+          projects.value = newProjects;
+        }
+      },
+      { immediate: true, deep: true }
+    );
 
     const projectForm = reactive({
       title: '',
@@ -374,7 +385,8 @@ export default {
 
     const fetchProjects = async () => {
       try {
-        projects.value = await store.dispatch('fetchProjects');
+        const res = await store.dispatch('fetchProjects');
+        projects.value = res || store.state.projects || [];
       } catch (error) {
         console.error('Error fetching projects:', error);
       }
@@ -408,7 +420,7 @@ export default {
       projectForm.title = project.title || '';
       projectForm.description = project.description || '';
       projectForm.image = project.image || '';
-      projectForm.link = project.link || '';
+      projectForm.link = project.link || project.liveUrl || project.githubUrl || '';
       projectForm.tags = project.tags || [];
       tagsInput.value = project.tags?.join(', ') || '';
       showAddProjectForm.value = true;
