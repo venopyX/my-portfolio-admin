@@ -1,13 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router';
-// import { getAuth } from 'firebase/auth';
 import AdminLayout from '@/components/AdminLayout.vue';
+import DashboardView from '@/views/DashboardView.vue';
+import LoginView from '@/views/LoginView.vue';
+import ProjectsAdmin from '@/components/ProjectsAdmin.vue';
+import BlogPostsAdmin from '@/components/BlogPostsAdmin.vue';
+import SocialMediaAdmin from '@/components/SocialMediaAdmin.vue';
+import HeroAdmin from '@/components/HeroAdmin.vue';
+import ProfileAdmin from '@/components/ProfileAdmin.vue';
 import store from '@/store';
 
 const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('@/views/LoginView.vue'),
+    component: LoginView,
     meta: { title: 'Login' }
   },
   {
@@ -16,39 +22,39 @@ const routes = [
     meta: { requiresAuth: true },
     children: [
       {
-        path: '/',
+        path: '',
         name: 'dashboard',
-        component: () => import('@/views/DashboardView.vue'),
+        component: DashboardView,
         meta: { title: 'Dashboard' }
       },
       {
-        path: '/projects',
+        path: 'projects',
         name: 'projects',
-        component: () => import('@/components/ProjectsAdmin.vue'),
+        component: ProjectsAdmin,
         meta: { title: 'Projects' }
       },
       {
-        path: '/blog-posts',
+        path: 'blog-posts',
         name: 'blog-posts',
-        component: () => import('@/components/BlogPostsAdmin.vue'),
+        component: BlogPostsAdmin,
         meta: { title: 'Blog Posts' }
       },
       {
-        path: '/social-media',
+        path: 'social-media',
         name: 'social-media',
-        component: () => import('@/components/SocialMediaAdmin.vue'),
+        component: SocialMediaAdmin,
         meta: { title: 'Social Media' }
       },
       {
-        path: '/hero',
+        path: 'hero',
         name: 'hero',
-        component: () => import('@/components/HeroAdmin.vue'),
+        component: HeroAdmin,
         meta: { title: 'Hero Section' }
       },
       {
-        path: '/profile',
+        path: 'profile',
         name: 'profile',
-        component: () => import('@/components/ProfileAdmin.vue'),
+        component: ProfileAdmin,
         meta: { title: 'Profile' }
       }
     ]
@@ -56,8 +62,20 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(process.env.BASE_URL || '/'),
   routes
+});
+
+// Error handling for chunk loading or network failures
+router.onError((error, to) => {
+  console.warn('Router error:', error);
+  if (/loading chunk/i.test(error.message) || /failed to fetch/i.test(error.message)) {
+    if (to && to.fullPath) {
+      window.location.href = to.fullPath;
+    } else {
+      window.location.reload();
+    }
+  }
 });
 
 // Navigation guard
